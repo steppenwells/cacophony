@@ -1,0 +1,4 @@
+name: cacophony
+mappings:
+  - prefix: cacophony
+    port: 5000
