@@ -9,10 +9,58 @@ import(
 	"bufio"
 	"github.com/google/uuid"
 	"github.com/unixpickle/wav"
+	"encoding/json"
+	"io/ioutil"
 )
 
 func healthcheck(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Ok")
+}
+
+type CommentData struct {
+	Username	string
+	Time 		string
+	Audiofile	string
+}
+
+type ConversationIndex struct {
+	Title		string
+	Count		int
+	Comments	[]CommentData
+}
+
+func loadIndex() ConversationIndex {
+	convFileName := "./audio/conversation.json"
+
+	if _, err := os.Stat(convFileName); os.IsNotExist(err) {
+		return ConversationIndex{Title: "example", Count: 0, Comments: []CommentData{}}
+	} else {
+		var index ConversationIndex
+		b, _ := ioutil.ReadFile(convFileName)
+		json.Unmarshal(b, &index)
+
+		return index
+	}
+}
+
+func saveIndex(index ConversationIndex) {
+	convFileName := "./audio/conversation.json"
+
+	b, _ := json.Marshal(index)
+
+	ioutil.WriteFile(convFileName, b, 0644)
+}
+
+func updateIndex(latest string) {
+	latestData := CommentData{Username: "Swells", Time: "now", Audiofile: latest}
+
+	latestIndex := loadIndex()
+
+	latestIndex.Count += 1
+	latestIndex.Comments = append(latestIndex.Comments, latestData)
+
+	saveIndex(latestIndex)
+
 }
 
 func updateConversation(latest string) {
@@ -48,6 +96,7 @@ func uploadWav(wr http.ResponseWriter, r *http.Request) {
 	fileName := "./audio/" + uuid.New().String() + ".wav"
 	saveLatest(fileName, r.Body)
 	updateConversation(fileName)
+	updateIndex(fileName)
 
 	fmt.Fprintf(wr, fileName)
 }
