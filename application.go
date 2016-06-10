@@ -30,7 +30,7 @@ type ConversationIndex struct {
 }
 
 func loadIndex() ConversationIndex {
-	convFileName := "./audio/conversation.json"
+	convFileName := "./public/audio/conversation.json"
 
 	if _, err := os.Stat(convFileName); os.IsNotExist(err) {
 		return ConversationIndex{Title: "example", Count: 0, Comments: []CommentData{}}
@@ -44,7 +44,7 @@ func loadIndex() ConversationIndex {
 }
 
 func saveIndex(index ConversationIndex) {
-	convFileName := "./audio/conversation.json"
+	convFileName := "./public/audio/conversation.json"
 
 	b, _ := json.Marshal(index)
 
@@ -64,7 +64,7 @@ func updateIndex(latest string) {
 }
 
 func updateConversation(latest string) {
-	convFileName := "./audio/converstion.wav"
+	convFileName := "./public/audio/conversation.wav"
 
 	if _, err := os.Stat(convFileName); os.IsNotExist(err) {
 		latestSound, _ := wav.ReadSoundFile(latest)
@@ -93,7 +93,7 @@ func saveLatest(filename string, contents io.Reader) {
 func uploadWav(wr http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
-	fileName := "./audio/" + uuid.New().String() + ".wav"
+	fileName := "./public/audio/" + uuid.New().String() + ".wav"
 	saveLatest(fileName, r.Body)
 	updateConversation(fileName)
 	updateIndex(fileName)
@@ -105,6 +105,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/healthcheck", healthcheck).Methods("GET")
 	r.HandleFunc("/uploadWav", uploadWav).Methods("POST")
+	//r.PathPrefix("/audio").Handler(http.FileServer(http.Dir("./audio/")))
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/")))
 	http.Handle("/", r)
 

@@ -59,8 +59,6 @@
 //            li.appendChild(au);
 //            li.appendChild(hf);
 //            recordingslist.appendChild(li);
-//            var formData = new FormData();
-//            formData.append("file", blob);
 
             var request = new XMLHttpRequest();
             request.onload = function (oEvent) {
@@ -71,6 +69,44 @@
             request.send(blob);
         });
     }
+
+    function loadAudio() {
+        var request = new XMLHttpRequest();
+        request.onload = function (r) {
+            __log('loaded audio', r);
+            const conv = JSON.parse(r.target.response);
+            __log('conv', conv);
+            for (i=0; i<conv.Comments.length; i++) {
+                addAudioNode(conv.Comments[i]);
+            }
+        };
+
+        request.open("GET", "/audio/conversation.json");
+        request.send();
+    }
+
+    function addAudioNode(comment) {
+
+        const url = comment.Audiofile.replace('/public', '');
+        var li = document.createElement('li');
+        var au = document.createElement('audio');
+        var ns = document.createElement('span');
+        var ts = document.createElement('span');
+
+        ns.innerHTML = comment.Username;
+
+        au.controls = true;
+        au.src = url;
+
+        ts.innerHTML = comment.Time
+
+        li.appendChild(ns);
+        li.appendChild(au);
+        li.appendChild(ts);
+        recordingslist.appendChild(li);
+
+    }
+
     window.onload = function init() {
         try {
             // webkit shim
@@ -88,6 +124,8 @@
         navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
             __log('No live audio input: ' + e);
         });
+
+        loadAudio();
     };
 </script>
 
