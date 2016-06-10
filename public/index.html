@@ -1,16 +1,45 @@
 <html>
 <head>
     <title>Cacophony</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 </head>
 <body>
-<h1>Hello world</h1>
+<div class="container">
+    <div class="row">
+        <h2>Audio commenting</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget dictum est, a tempus justo. Sed dolor lacus, hendrerit ut vulputate ut, ultricies in quam. Etiam ornare, ante eget vehicula egestas, lacus mi rhoncus lectus, aliquet condimentum ex quam id ligula. Phasellus cursus urna non ex elementum feugiat. Vestibulum ultrices facilisis venenatis. Vivamus nulla sapien, sollicitudin vitae feugiat id, fringilla et metus. Sed blandit sapien ut lacus euismod, sollicitudin maximus augue mattis. Praesent lacinia blandit ex, a efficitur enim iaculis ut. Duis ut dignissim massa. Vivamus rutrum odio non nisi lacinia, eget congue nisl ullamcorper.</p>
 
-<button onclick="startRecording(this);">record</button>
-<button onclick="stopRecording(this);" disabled>stop</button>
+        <p>In sem dui, egestas in lacinia sit amet, rutrum nec mi. Quisque et suscipit orci, sit amet mollis erat. Aliquam et ornare ante. Proin quis lorem tincidunt, viverra justo vitae, maximus purus. Praesent non blandit lorem. Nulla sollicitudin magna ut ipsum lacinia volutpat. Vestibulum elementum finibus volutpat. Aliquam venenatis velit ut porttitor sagittis. Nunc vestibulum, nunc eu sodales facilisis, elit enim accumsan metus, vitae hendrerit magna orci in leo.</p>
+    </div>
 
-<h2>Recordings</h2>
-<ul id="recordingslist"></ul>
+    <div class="row">
+        <h2>Comment</h2>
+        <p>press record, to record your comment and stop when done</p>
+        <button type="button" class="btn btn-danger" onclick="startRecording(this);">record</button>
+        <button type="button" class="btn btn-success" onclick="stopRecording(this);" disabled>stop</button>
+    </div>
+    <div class="row">
+        <h2>Listen to the whole conversation</h2>
+        <audio src="/audio/conversation.wav" controls="true" />
+    </div>
 
+    <div class="row">
+        <div class="col-md-6">
+            <h3>comments</h3>
+            <ul id="recordingslist" class="list-unstyled"></ul>
+        </div>
+    </div>
+
+
+</p>
+</div>
 <script>
     function __log(e, data) {
         console.log(e, data);
@@ -90,8 +119,8 @@
         const url = comment.Audiofile.replace('/public', '');
         var li = document.createElement('li');
         var au = document.createElement('audio');
-        var ns = document.createElement('span');
-        var ts = document.createElement('span');
+        var ns = document.createElement('h5');
+        var ts = document.createElement('p');
 
         ns.innerHTML = comment.Username;
 
