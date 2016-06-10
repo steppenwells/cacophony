@@ -28,6 +28,11 @@
     <div class="row">
         <h2>Listen to the whole conversation</h2>
         <audio src="/audio/conversation.wav" controls="true" />
+
+        <button type="button" class="btn btn-warning" onclick="toggleAutoplay();">Listen to new comments</button>
+    </div>
+    <div class="row">
+        <button type="button" class="btn btn-warning" onclick="toggleAutoplay();">Listen to new comments</button>
     </div>
 
     <div class="row">
@@ -46,6 +51,9 @@
     }
     var audio_context;
     var recorder;
+
+    var autoplay = false;
+
     function startUserMedia(stream) {
         var input = audio_context.createMediaStreamSource(stream);
         __log('Media stream created.');
@@ -90,8 +98,14 @@
 //            recordingslist.appendChild(li);
 
             var request = new XMLHttpRequest();
-            request.onload = function (oEvent) {
-                __log('file uploaded');
+            request.onload = function (resp) {
+                __log('file uploaded', resp.target.responseText);
+                const synthComment = {
+                    Audiofile: resp.target.responseText.replace("./public", ""),
+                    Username: "SWells",
+                    Time: "Now"
+                }
+                addAudioNode(synthComment);
             };
 
             request.open("POST", "uploadWav");
@@ -127,6 +141,10 @@
         au.controls = true;
         au.src = url;
 
+        if(autoplay) {
+            au.autoplay = true;
+        }
+
         ts.innerHTML = comment.Time
 
         li.appendChild(ns);
@@ -134,6 +152,10 @@
         li.appendChild(ts);
         recordingslist.appendChild(li);
 
+    }
+
+    function toggleAutoplay() {
+        autoplay = !autoplay;
     }
 
     window.onload = function init() {
